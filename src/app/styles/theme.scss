@@ -1,0 +1,62 @@
+@use '@angular/material' as mat;
+@use './../ui-components/chip/chip.component.scss' as chip;
+@use './../ui-components/switch/switch.component.scss' as switch;
+@use './../unity-loader/unity-loader.component.scss' as unity-loader;
+
+@import './color-palette.scss';
+@import './colors.scss';
+
+@include mat.core();
+
+$app-primary: mat.define-palette($primary-palette);
+$app-accent: mat.define-palette($accent-palette);
+
+$app-warn: mat.define-palette($warn-palette);
+
+$app-typography: mat.define-typography-config();
+
+$app-light-theme: mat.define-light-theme(
+    (
+      color: (
+        primary: $app-accent,
+        accent: $app-primary,
+        warn: $app-warn,
+      ),
+    )
+);
+
+$app-dark-theme: mat.define-dark-theme(
+    (
+      color: (
+        primary: $app-primary,
+        accent: $app-accent,
+        warn: $app-warn,
+      ),
+      typography: $app-typography,
+    )
+);
+
+@include mat.all-component-themes($app-dark-theme);
+@include mat.typography-hierarchy($app-typography);
+
+.dark-theme {
+  @include chip.theme($app-dark-theme);
+  @include switch.theme($app-dark-theme);
+  @include unity-loader.theme($app-dark-theme);
+
+  // specific styles for dark theme should be written here,
+  // expected that component that requires specific styles will
+  // create @mixin and will be imported here
+  // almost every case for styling can be done via pallet usage
+}
+
+.light-theme {
+  @include mat.all-component-colors($app-light-theme);
+  @include chip.theme($app-light-theme);
+  @include switch.theme($app-light-theme);
+  @include unity-loader.theme($app-light-theme);
+  // specific styles for light theme should be written here,
+  // expected that component that requires specific styles will
+  // create @mixin and will be imported here
+  // almost every case for styling can be done via pallet usage
+}

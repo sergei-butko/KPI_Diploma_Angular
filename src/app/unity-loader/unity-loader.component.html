@@ -1,0 +1,74 @@
+<nav class="nav">
+  <div class="nav-content">
+    <div class="select">
+      <app-select
+        [products]="unityService.products"
+        [selectedProduct]="unityService.currentActiveProduct ? unityService.currentActiveProduct.id : ''"
+        (productChanged)="productChanged($event)"
+      ></app-select>
+    </div>
+    <div class="right-side">
+      Configurator
+      <button mat-icon-button (click)="toggleTheme()">
+        <mat-icon>{{ isDarkTheme ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div>
+    <canvas id="unity-canvas" width="600" height="600"></canvas>
+    <div *ngIf="unityService.productModels?.length">
+      <p><strong>Models</strong></p>
+      <ng-container *ngFor="let model of unityService.productModels">
+        <app-chip
+          (modelActivated)="toggleModelVariant(model.productId, model.id)"
+          [active]="activeModelsSet.has(model.id)"
+          [model]="model.title"
+        ></app-chip>
+      </ng-container>
+    </div>
+  </div>
+  <div *ngIf="!isInitialized" class="spinner-container">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+  <div *ngIf="isInitialized" class="product-info">
+    <div class="product-desc">
+      <p class="product-title">{{ unityService.currentActiveProduct.title }}</p>
+      <p class="price"><strong>Price: </strong> ${{ productInvoice.price }}</p>
+    </div>
+    <div class="variant-sets">
+      <div *ngIf="unityService.productVariantSets?.length">
+        <p><strong>Variant sets</strong></p>
+        <ng-container *ngFor="let variantSet of unityService.productVariantSets">
+          <input
+            type="image"
+            class="circle-btn"
+            [ngClass]="activeVariantSetId === variantSet.id ? 'active' : ''"
+            [src]="base64ToImage(variantSet.thumbnail)"
+            title="{{ variantSet.title }}"
+            (click)="activateVariantSet(variantSet.productId, variantSet.id)"
+            alt="thumbnail"/>
+        </ng-container>
+      </div>
+
+      <p><strong>Materials</strong></p>
+      <ng-container *ngFor="let group of groupedMaterials">
+        <div class="group">
+          <p class="group-title">
+            {{ group.name }}
+          </p>
+          <div>
+            <app-switch
+              [variantChange]="variantSetChangeEvent"
+              [selectedOption]="group.selectedOption"
+              (optionSelected)="activateMaterial($event.productId, $event.materialId)"
+              [options]="group.materials"
+            ></app-switch>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

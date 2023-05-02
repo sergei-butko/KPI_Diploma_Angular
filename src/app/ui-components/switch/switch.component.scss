@@ -1,0 +1,77 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@import '../../styles/colors.scss';
+@import '../../styles/color-palette.scss';
+
+$option-height: 50px;
+
+@mixin color($theme) {
+  $color-config: mat.get-color-config($theme);
+  $primary-palette: map.get($color-config, primary);
+  $accent-palette: map.get($color-config, accent);
+  $is-dark-theme: map.get($color-config, is-dark);
+
+  @if ($is-dark-theme == false) {
+    .options-container {
+      background-color: $light-theme-background;
+    }
+  } @else {
+    .options-container {
+      background-color: $dark-theme-background;
+    }
+  }
+  .placeholder {
+    border: 2px solid map-get($primary-palette, 500);
+  }
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+}
+
+.options-container {
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: normal;
+  position: relative;
+  color: #fff;
+  display: inline-flex;
+  height: $option-height;
+  align-items: center;
+}
+
+.option {
+  padding: 2px 13px;
+  width: 100px;
+  height: $option-height;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.placeholder {
+  cursor: pointer;
+  position: absolute;
+  background: transparent;
+  border-radius: 5px;
+  color: transparent;
+  width: 100px;
+  font-size: 14px;
+  padding: 2px 10px;
+  height: $option-height;
+  display: flex;
+  align-items: center;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0;
+}
+
+.option-title {
+  padding: 5px;
+}
