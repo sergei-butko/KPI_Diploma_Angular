@@ -12,13 +12,12 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {ChipComponent} from './ui-components/chip/chip.component';
 import {SelectComponent} from './ui-components/select/select.component';
-import {SwitchComponent} from './ui-components/switch/switch.component';
 import {UnityLoaderComponent} from './unity-loader/unity-loader.component';
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
-  declarations: [AppComponent, UnityLoaderComponent, SelectComponent, ChipComponent, SwitchComponent],
+  declarations: [AppComponent, UnityLoaderComponent, SelectComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -32,6 +31,7 @@ import {UnityLoaderComponent} from './unity-loader/unity-loader.component';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

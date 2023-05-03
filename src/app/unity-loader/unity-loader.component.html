@@ -1,74 +1,90 @@
-<nav class="nav">
+<nav class="nav" xmlns="http://www.w3.org/1999/html">
   <div class="nav-content">
-    <div class="select">
-      <app-select
-        [products]="unityService.products"
-        [selectedProduct]="unityService.currentActiveProduct ? unityService.currentActiveProduct.id : ''"
-        (productChanged)="productChanged($event)"
-      ></app-select>
-    </div>
+    <p class="page-title">Configuration and Visualization System</p>
     <div class="right-side">
-      Configurator
-      <button mat-icon-button (click)="toggleTheme()">
-        <mat-icon>{{ isDarkTheme ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      <div class="select">
+        <app-select
+          [products]="unityService.products"
+          [selectedProduct]="unityService.currentActiveProduct ? unityService.currentActiveProduct.id : ''"
+          (productChanged)="productChanged($event)"
+        ></app-select>
+      </div>
+      <button mat-raised-button color="primary" (click)="toggleBackground()">
+        {{ isSolidBackground ? 'Room View' : 'Solid Color' }}
       </button>
     </div>
   </div>
 </nav>
 
+<div *ngIf="!isInitialized" class="spinner-container">
+  <mat-spinner [diameter]="50"></mat-spinner>
+</div>
+<div *ngIf="unityService.productModels?.length">
+  <p class="product-title">{{ unityService.currentActiveProduct.title }}</p>
+</div>
 <div class="container">
   <div>
-    <canvas id="unity-canvas" width="600" height="600"></canvas>
-    <div *ngIf="unityService.productModels?.length">
-      <p><strong>Models</strong></p>
-      <ng-container *ngFor="let model of unityService.productModels">
-        <app-chip
-          (modelActivated)="toggleModelVariant(model.productId, model.id)"
-          [active]="activeModelsSet.has(model.id)"
-          [model]="model.title"
-        ></app-chip>
-      </ng-container>
+    <canvas id="unity-canvas"></canvas>
+    <div class="product-desc" *ngIf="isInitialized">
+      <p class="price">Price: ${{ unityService.getCurrentProductInvoice().price }}</p>
     </div>
-  </div>
-  <div *ngIf="!isInitialized" class="spinner-container">
-    <mat-spinner [diameter]="50"></mat-spinner>
   </div>
   <div *ngIf="isInitialized" class="product-info">
-    <div class="product-desc">
-      <p class="product-title">{{ unityService.currentActiveProduct.title }}</p>
-      <p class="price"><strong>Price: </strong> ${{ productInvoice.price }}</p>
-    </div>
-    <div class="variant-sets">
-      <div *ngIf="unityService.productVariantSets?.length">
-        <p><strong>Variant sets</strong></p>
-        <ng-container *ngFor="let variantSet of unityService.productVariantSets">
-          <input
-            type="image"
-            class="circle-btn"
-            [ngClass]="activeVariantSetId === variantSet.id ? 'active' : ''"
-            [src]="base64ToImage(variantSet.thumbnail)"
-            title="{{ variantSet.title }}"
-            (click)="activateVariantSet(variantSet.productId, variantSet.id)"
-            alt="thumbnail"/>
-        </ng-container>
-      </div>
-
-      <p><strong>Materials</strong></p>
-      <ng-container *ngFor="let group of groupedMaterials">
-        <div class="group">
-          <p class="group-title">
-            {{ group.name }}
-          </p>
-          <div>
-            <app-switch
-              [variantChange]="variantSetChangeEvent"
-              [selectedOption]="group.selectedOption"
-              (optionSelected)="activateMaterial($event.productId, $event.materialId)"
-              [options]="group.materials"
-            ></app-switch>
-          </div>
+    <div *ngIf="unityService.productVariantSets?.length">
+      <mat-expansion-panel class="variant-foldout">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <p class="variants-title">Variant sets:</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="variants-container">
+          <ng-container *ngFor="let variantSet of unityService.productVariantSets">
+            <div class="variant-btn">
+              <img src="data:image/png;base64,{{variantSet.thumbnail}}" title="{{ variantSet.title }}"
+                   (click)="activateVariantSet(variantSet.productId, variantSet.id)" alt="variantSet"/>
+            </div>
+          </ng-container>
         </div>
-      </ng-container>
+      </mat-expansion-panel>
+    </div>
+    <div *ngIf="unityService.productModels?.length">
+      <mat-expansion-panel class="variant-foldout">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <p class="variants-title">Variants:</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="variants-container">
+          <ng-container *ngFor="let variant of unityService.productModels">
+            <div class="variant-btn">
+              <img src="data:image/png;base64,{{variant.thumbnail}}" title="{{ variant.title }}"
+                   (click)="activateModel(variant.productId, variant.id)" alt="variant"/>
+            </div>
+          </ng-container>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <div *ngIf="unityService.productModels?.length">
+      <mat-expansion-panel class="variant-foldout">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <p class="variants-title">Materials:</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="materials-container">
+          <ng-container *ngFor="let group of groupedMaterials">
+            <p class="materials-title">{{group.name.substring(0, group.name.indexOf(' Material'))}}:</p>
+            <div class="variants-container">
+              <ng-container *ngFor="let material of group.materials">
+                <div class="variant-btn">
+                  <img src="data:image/png;base64,{{material.thumbnail}}" title="{{ material.title }}"
+                       (click)="activateMaterial(material.productId, material.id)" alt="variant"/>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </mat-expansion-panel>
     </div>
   </div>
 </div>

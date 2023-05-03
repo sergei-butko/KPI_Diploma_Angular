@@ -213,7 +213,7 @@ export interface Product {
   id: string;
   title: string;
   isActive: boolean;
-  externalId?: string;
+  externalId: string;
 }
 
 export interface VariantGroup {

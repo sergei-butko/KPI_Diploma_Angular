@@ -10,6 +10,12 @@
   align-items: center;
 }
 
+#unity-canvas {
+  width: 600px;
+  height: 600px;
+  background: #231f20;
+}
+
 .nav {
   width: 100%;
   height: 50px;
@@ -22,15 +28,9 @@
     justify-content: space-between;
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 90%;
     max-width: 1200px;
   }
-}
-
-#unity-canvas {
-  width: 960px;
-  height: 600px;
-  background: #231f20;
 }
 
 .container {
@@ -41,58 +41,30 @@
   grid-template-rows: 1fr;
   gap: 1rem;
   grid-template-areas: '. .';
-
-  .spinner-container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
 
-.button-group {
+.spinner-container {
+  height: 100%;
+  width: 100%;
+  margin-top: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.btn {
-  margin: 0 20px;
-  margin-left: 0;
-}
-
-.circle-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin: 20px;
-  margin-left: 0;
-}
-
-@mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
-  $primary-palette: map.get($color-config, primary);
-  $accent-palette: map.get($color-config, accent);
-  $is-dark-theme: map.get($color-config, is-dark);
-
-  .circle-btn.active {
-    box-shadow: 0 0 0 2px map-get($primary-palette, 500);
-  }
-}
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
+.page-title {
+  margin: 0;
+  font: 2em "Times New Roman", sans-serif;
 }
 
 .product-title {
-  font-size: 25px;
+  align-self: start;
+  margin: 20px 0 0 0;
+  font: 2em "Times New Roman", sans-serif;
 }
 
 .price {
-  font-size: 25px;
+  font: 1.75em "Times New Roman", sans-serif;
 }
 
 .right-side {
@@ -102,12 +74,50 @@
   gap: 1rem;
 }
 
-.group {
-  margin: 10px 0;
+.product-desc {
+  margin-top: 15px;
+}
 
-  &-title {
-    margin-bottom: 10px;
-  }
+.variant-foldout {
+  margin-bottom: 20px;
+}
+
+.variant-btn {
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  border-radius: 20%;
+  margin: 0 5px;
+}
+
+.variant-btn img {
+  width: auto;
+  height: 100%;
+}
+
+.variants-title {
+  height: 35px;
+  width: 110px;
+  align-self: center;
+  margin: 8px 20px 0 0;
+  font: 1.5em "Times New Roman", sans-serif;
+}
+
+.variants-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.materials-title {
+  height: 35px;
+  width: 110px;
+  margin: 8px 20px 0 0;
+  font: 1.3em "Times New Roman", sans-serif;
+}
+
+.materials-container {
+  display: flex;
+  flex-direction: column;
 }
 
 @media screen and (max-width: 1080px) {

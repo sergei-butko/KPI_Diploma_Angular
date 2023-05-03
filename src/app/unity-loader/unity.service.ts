@@ -2,7 +2,16 @@ import {HttpClient} from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
 import {from, Observable, tap} from 'rxjs';
 import {environment} from '../environments/environment';
-import {Unity, ConfigurationSystem, VariantSet, Variant, Product, Invoice, ProductState} from '../types/unity';
+import {
+  Unity,
+  ConfigurationSystem,
+  VariantSet,
+  Variant,
+  Product,
+  Invoice,
+  ProductState,
+  VariantState
+} from '../types/unity';
 
 export interface ProductInfo {
   productExternalId: string;
@@ -51,6 +60,13 @@ export class UnityService {
         this.getProducts();
 
         this.configurationSystem.addEventListener(
+          this.configurationSystem.initialised,
+          () => {
+            this.loadProduct(this.products[1].externalId);
+          }
+        );
+
+        this.configurationSystem.addEventListener(
           this.configurationSystem.productActiveStateChanged,
           ({productId}: ProductState) => {
             this.currentActiveProduct = this.configurationSystem.getProduct(productId);
@@ -59,6 +75,21 @@ export class UnityService {
             this.productVariantSets = this.configurationSystem.getProductVariantSets(this.currentActiveProduct.id);
             this.productActiveStateChanged.emit();
           },
+        );
+
+        this.configurationSystem.addEventListener(
+          this.configurationSystem.variantActiveStateChanged,
+          ({variantId, isActive}: VariantState) => {
+            this.productModels = this.productModels.map(variant => {
+              if (variant.id === variantId) {
+                return {
+                  ...variant,
+                  isActive: isActive,
+                };
+              }
+              return variant;
+            });
+          }
         );
       }),
     );
@@ -86,14 +117,6 @@ export class UnityService {
     return this.configurationSystem.loadProduct(productId);
   }
 
-  // public setCurrentActiveProduct(productId: string) {
-  //   const product = this.configurationSystem.getProduct(productId);
-  //   this.productModels = this.getModels(productId);
-  //   this.productMaterials = this.getMaterials(productId);
-  //   this.currentActiveProduct = product;
-  //   this.configurationSystem.activateProduct(productId);
-  // }
-
   public getCurrentProductInvoice(): Invoice {
     return this.configurationSystem.getCurrentProductInvoice();
   }
@@ -114,16 +137,12 @@ export class UnityService {
     this.configurationSystem.activateVariantSet(productId, variantSetId);
   }
 
-  // public getModels(productId: string): Variant[] {
-  //   return this.configurationSystem.getProductModels(productId);
-  // }
-  //
-  // public getMaterials(productId: string): Variant[] {
-  //   return this.configurationSystem.getProductMaterials(productId);
-  // }
+  public updateBackgroundActiveState(activeState: boolean) {
+    this.configurationSystem.updateBackgroundActiveState(activeState);
+  }
 
   public changeBackgroundColor(color: string) {
-    this.configurationSystem.changeBackgroundColor(color);
     this.configurationSystem.updateBackgroundActiveState(true);
+    this.configurationSystem.changeBackgroundColor(color);
   }
 }
