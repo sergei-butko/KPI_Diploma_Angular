@@ -1,4 +1,4 @@
-import {Variant} from "../types/unity";
+import {Variant} from "./unity";
 
 export interface MaterialGroup {
   group: string;

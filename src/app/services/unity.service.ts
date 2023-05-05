@@ -1,41 +1,38 @@
-import {HttpClient} from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
 import {from, Observable, tap} from 'rxjs';
-import {environment} from '../environments/environment';
+import {environment} from '../../environments/environment';
 import {
   Unity,
   ConfigurationSystem,
-  VariantSet,
-  Variant,
   Product,
-  Invoice,
   ProductState,
-  VariantState
-} from '../types/unity';
+  Invoice,
+  Variant,
+  VariantState,
+  VariantSet,
+} from '../models/unity';
 
 export interface ProductInfo {
   productExternalId: string;
   productInternalId: string;
   productName: string;
-  isDefault: boolean;
   isAvailable: boolean;
+  productPreviewBase64: string;
   assetAddress: string;
 }
 
 @Injectable({providedIn: 'root'})
 export class UnityService {
-
   public currentActiveProduct!: Product;
   public productMaterials: Variant[] = [];
   public productVariantSets: VariantSet[] = [];
   public productModels: Variant[] = [];
-  public products: Product[] = [];
 
+  public initialized: EventEmitter<void> = new EventEmitter<void>();
   public productActiveStateChanged: EventEmitter<void> = new EventEmitter<void>();
-  private configurationSystem!: ConfigurationSystem;
+  public unityClosed: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(private http: HttpClient) {
-  }
+  private configurationSystem!: ConfigurationSystem;
 
   public initializeUnity(): Observable<Unity> {
     return from(
@@ -57,12 +54,10 @@ export class UnityService {
         this.configurationSystem = value.Module.configurationSystem;
         this.configurationSystem.setBuildConfigurations(environment.unityAssetsURL + `/assets`);
 
-        this.getProducts();
-
         this.configurationSystem.addEventListener(
           this.configurationSystem.initialised,
           () => {
-            this.loadProduct(this.products[1].externalId);
+            this.initialized.emit();
           }
         );
 
@@ -95,24 +90,6 @@ export class UnityService {
     );
   }
 
-  public getProducts(): void {
-    const externalProductInfoUrl = `${environment.unityAssetsURL}/assets/Build/Configs/ProductsExternalConfig.json`;
-
-    this.http
-      .get<{ products: ProductInfo[] }>(externalProductInfoUrl)
-      .subscribe((obj: { products: ProductInfo[] }) => {
-        this.products = obj.products
-          .map((p: ProductInfo) => (
-            {
-              id: p.productInternalId,
-              title: p.productName,
-              isActive: p.isAvailable,
-              externalId: p.productExternalId,
-            }
-          ));
-      });
-  }
-
   public loadProduct(productId: string): void {
     return this.configurationSystem.loadProduct(productId);
   }
@@ -125,10 +102,6 @@ export class UnityService {
     this.configurationSystem.activateModelVariant(productId, variantId);
   }
 
-  public deactivateModelVariant(productId: string, variantId: string) {
-    this.configurationSystem.deactivateModelVariant(productId, variantId);
-  }
-
   public activateMaterialVariant(productId: string, variantId: string): void {
     this.configurationSystem.activateMaterialVariant(productId, variantId);
   }
@@ -137,12 +110,17 @@ export class UnityService {
     this.configurationSystem.activateVariantSet(productId, variantSetId);
   }
 
-  public updateBackgroundActiveState(activeState: boolean) {
+  public updateBackgroundActiveState(activeState: boolean): void {
     this.configurationSystem.updateBackgroundActiveState(activeState);
   }
 
   public changeBackgroundColor(color: string) {
     this.configurationSystem.updateBackgroundActiveState(true);
     this.configurationSystem.changeBackgroundColor(color);
+  }
+
+  public quitUnity(): void {
+    this.unityClosed.emit();
+    this.configurationSystem.quitUnity();
   }
 }

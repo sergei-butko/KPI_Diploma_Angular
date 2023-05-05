@@ -147,6 +147,11 @@ export interface ConfigurationSystem {
   setBuildConfigurations(buildConfigsBaseUrl: string): void;
 
   /**
+   * Attempts to unload Unity after page with unity container was closed.
+   */
+  quitUnity(): void;
+
+  /**
    * Adds event listener to the events triggered in configurationSystem. Event name is one of the event names defined in the configurator.
    * @param {string} eventName
    * @callback callback
@@ -213,6 +218,7 @@ export interface Product {
   id: string;
   title: string;
   isActive: boolean;
+  preview: string; // base64
   externalId: string;
 }
 
@@ -239,7 +245,7 @@ export interface VariantSet {
   variantIds: string[];
 }
 
-export interface Prerenders {
+export interface Prerender {
   viewDescription: string;
   prerenderBase64: string;
 }
