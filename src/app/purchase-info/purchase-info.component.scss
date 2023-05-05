@@ -1,0 +1,85 @@
+.modal-container {
+  height: 550px;
+  width: 350px;
+  align-self: center;
+  background: #DDD0C8;
+  border-radius: 10px;
+  box-shadow: 0 0 5px white;
+  margin: 10% 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+
+  color: #323232;
+  font: 1.4em "Times New Roman", sans-serif;
+}
+
+.modal-title {
+  margin-bottom: 10px;
+  font-size: 1.7em;
+  font-weight: bold;
+}
+
+.modal-record-title {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.modal-product-title {
+  display: flex;
+  margin-top: 20px;
+  font-size: 1.1em;
+}
+
+.modal-variant {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 10px;
+  background-color: #d3c6be;
+  border-radius: 5px;
+}
+
+.modal-variant p {
+  margin: 0;
+  padding: 8px;
+  font-size: 0.85em;
+}
+
+.total-cost {
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3em;
+}
+
+.modal-btn {
+  width: 110px;
+  height: 40px;
+  font: 0.75em "Times New Roman", sans-serif;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(70, 70, 70, 0.5);
+  transform: scaleX(99%) scaleY(99%);
+}
+
+.close-btn {
+  background-color: #d3c6be;
+}
+
+.close-btn:hover {
+  background-color: #c9bcb4;
+}
+
+.add-btn {
+  background-color: darkseagreen;
+}
+
+.add-btn:hover {
+  background-color: #85b285;
+}

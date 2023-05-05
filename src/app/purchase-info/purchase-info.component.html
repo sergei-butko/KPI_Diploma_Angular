@@ -1,0 +1,21 @@
+<div class="modal-container" *ngIf="productInvoice !== null">
+  <div>
+    <p class="modal-title">Your order</p>
+    <div class="modal-product-title">
+      <p class="modal-record-title">Title:</p>
+      <p>{{productInvoice.product.title}}</p>
+    </div>
+    <p class="modal-record-title">Additional variants:</p>
+    <ng-container *ngFor="let variant of productInvoice.product.variants">
+      <div class="modal-variant" *ngIf="variant.price!==0">
+        <p>{{variant.title}}</p>
+        <p>${{variant.price}}</p>
+      </div>
+    </ng-container>
+    <p class="total-cost">Total cost: ${{productInvoice.price}}</p>
+  </div>
+  <div class="btn-group">
+    <button class="modal-btn close-btn" (click)="modalService.close()">Close</button>
+    <button class="modal-btn add-btn">Add to cart</button>
+  </div>
+</div>

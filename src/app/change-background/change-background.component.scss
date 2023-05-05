@@ -1,0 +1,17 @@
+.change-background-btn {
+  width: 120px;
+  height: 50px;
+  font: 1.4em "Times New Roman", sans-serif;
+  border: 0;
+  border-radius: 8px;
+  background-color: #ecdfd7;
+  box-shadow: 2px 2px 5px rgba(70, 70, 70, 0.5);
+}
+
+.change-background-btn:hover {
+  background-color: #e4d7d0;
+}
+
+.change-background-btn:active {
+  transform: scaleX(99%) scaleY(99%);
+}

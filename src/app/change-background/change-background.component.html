@@ -1,0 +1,4 @@
+<button class="change-background-btn" *ngIf="showComponent"
+        (click)="updateBackgroundActiveState(!isSolidBackground)">
+  {{ isSolidBackground ? 'Room View' : 'Solid Color' }}
+</button>
