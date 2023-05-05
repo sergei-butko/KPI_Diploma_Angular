@@ -16,6 +16,7 @@ import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {HomeComponent} from './home/home.component';
 import {NavBarComponent} from './nav-bar/nav-bar.component';
+import {FooterComponent} from './footer/footer.component';
 import {ChangeBackgroundComponent} from './change-background/change-background.component';
 import {ProductPageComponent} from './product-page/product-page.component';
 import {ModalComponent} from './modal/modal.component';
@@ -26,6 +27,7 @@ import {PurchaseInfoComponent} from './purchase-info/purchase-info.component';
     AppComponent,
     HomeComponent,
     NavBarComponent,
+    FooterComponent,
     ChangeBackgroundComponent,
     ProductPageComponent,
     ModalComponent,

@@ -15,7 +15,7 @@ import {ModalService} from "../services/modal.service";
 export class ProductPageComponent
   implements OnInit, OnDestroy {
 
-  public modalWindowUniqueId:string='';
+  public modalWindowUniqueId: string = '';
 
   public isInitialized = false;
   public groupedMaterials: MaterialGroup[] = [];
