@@ -1,43 +1,52 @@
-import {ChangeDetectorRef, Component, OnInit, Renderer2} from '@angular/core';
-import {MaterialCache, MaterialGroup} from '../models/GroupedMaterialsModels';
-import {ScriptService} from '../services/script.service';
-import {Subject} from 'rxjs';
-import {UnityService} from './unity.service';
-import {environment} from '../environments/environment';
+import {ChangeDetectorRef, Component, EventEmitter, Injectable, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {Subscription} from "rxjs";
+import {environment} from "../../environments/environment";
+import {MaterialCache, MaterialGroup} from "../models/GroupedMaterialsModels";
+import {ScriptService} from "../services/script.service";
+import {UnityService} from "../services/unity.service";
+import {ModalService} from "../services/modal.service";
 
 @Component({
-  selector: 'app-unity-loader',
-  templateUrl: './unity-loader.component.html',
-  styleUrls: ['./unity-loader.component.scss'],
+  selector: 'app-product-page',
+  templateUrl: './product-page.component.html',
+  styleUrls: ['./product-page.component.scss'],
 })
-export class UnityLoaderComponent implements OnInit {
+export class ProductPageComponent
+  implements OnInit, OnDestroy {
+
   public isInitialized = false;
   public groupedMaterials: MaterialGroup[] = [];
-  public isSolidBackground = false;
-  public unityBackground = '#191919';
-  public variantSetChangeEvent = new Subject<string[]>();
+
+  private unityInitializedSubscription!: Subscription;
 
   constructor(
     public unityService: UnityService,
+    private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private renderer: Renderer2,
     private scriptService: ScriptService,
+    protected modalService: ModalService,
   ) {
   }
 
-  public ngOnInit() {
+  ngOnInit() {
     const scriptElement = this.scriptService.loadJsScript(
       this.renderer, `${environment.unityAssetsURL}/assets/Build/WebGLBuild.loader.js`);
+
     scriptElement.onload = () => {
       console.log('Load the Unity Script');
+
       this.unityService.initializeUnity().subscribe(() => {
         this.changeDetectorRef.detectChanges();
-        if (this.isSolidBackground) {
-          this.unityService.changeBackgroundColor(this.unityBackground)
-        } else {
-          this.unityService.updateBackgroundActiveState(false);
-        }
       });
+
+      this.unityInitializedSubscription = this.unityService.initialized.subscribe(() => {
+        const productId = this.route.snapshot.paramMap.get('id');
+        if (productId !== null) {
+          this.unityService.loadProduct(productId);
+        }
+      })
 
       this.unityService.productActiveStateChanged.subscribe(() => {
         this.isInitialized = true;
@@ -45,9 +54,15 @@ export class UnityLoaderComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       });
     };
+
     scriptElement.onerror = () => {
       console.warn('Could not load the Unity Script!');
     };
+  }
+
+  ngOnDestroy(): void {
+    this.isInitialized = false;
+    this.unityInitializedSubscription.unsubscribe()
   }
 
   public activateModel(productId: string, variantId: string): void {
@@ -60,21 +75,6 @@ export class UnityLoaderComponent implements OnInit {
 
   public activateVariantSet(productId: string, variantSetId: string): void {
     this.unityService.activateVariantSet(productId, variantSetId);
-    const variants: string[] = [];
-    this.variantSetChangeEvent.next(variants);
-  }
-
-  public toggleBackground() {
-    this.isSolidBackground = !this.isSolidBackground;
-    if (this.isSolidBackground) {
-      this.unityService.changeBackgroundColor(this.unityBackground);
-    } else {
-      this.unityService.updateBackgroundActiveState(false);
-    }
-  }
-
-  public productChanged(productId: string): void {
-    this.unityService.loadProduct(productId);
   }
 
   private groupMaterials() {

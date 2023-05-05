@@ -1,0 +1,78 @@
+<div class="container">
+  <div>
+    <canvas id="unity-canvas"></canvas>
+    <div class="product-desc" *ngIf="isInitialized">
+      <p class="small-title" *ngIf="unityService.productModels?.length">
+        {{ unityService.currentActiveProduct.title }}
+      </p>
+      <div class="price-container">
+        <p class="small-title">Price: ${{ unityService.getCurrentProductInvoice().price }}</p>
+        <button class="purchase-btn" (click)="modalService.open('purchase-info')">Purchase</button>
+        <app-modal id="purchase-info">
+          <app-purchase-info [productInvoice]=unityService.getCurrentProductInvoice()></app-purchase-info>
+        </app-modal>
+      </div>
+    </div>
+  </div>
+  <div>
+    <mat-spinner *ngIf="!isInitialized" [diameter]="40"></mat-spinner>
+    <div *ngIf="isInitialized" class="product-info">
+      <div *ngIf="unityService.productVariantSets?.length">
+        <mat-expansion-panel class="variant-foldout">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="variants-title">Variant sets:</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="variants-container">
+            <ng-container *ngFor="let variantSet of unityService.productVariantSets">
+              <div class="variant-btn">
+                <img src="data:image/png;base64,{{variantSet.thumbnail}}" title="{{ variantSet.title }}"
+                     (click)="activateVariantSet(variantSet.productId, variantSet.id)" alt="variantSet"/>
+              </div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+      </div>
+      <div *ngIf="unityService.productModels?.length">
+        <mat-expansion-panel class="variant-foldout">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="variants-title">Variants:</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="variants-container">
+            <ng-container *ngFor="let variant of unityService.productModels">
+              <div class="variant-btn">
+                <img src="data:image/png;base64,{{variant.thumbnail}}" title="{{ variant.title }}"
+                     (click)="activateModel(variant.productId, variant.id)" alt="variant"/>
+              </div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+      </div>
+      <div *ngIf="unityService.productModels?.length">
+        <mat-expansion-panel class="variant-foldout">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="variants-title">Materials:</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="materials-container">
+            <ng-container *ngFor="let group of groupedMaterials">
+              <p class="materials-title">{{group.name.substring(0, group.name.indexOf(' Material'))}}:</p>
+              <div class="variants-container">
+                <ng-container *ngFor="let material of group.materials">
+                  <div class="variant-btn">
+                    <img src="data:image/png;base64,{{material.thumbnail}}" title="{{ material.title }}"
+                         (click)="activateMaterial(material.productId, material.id)" alt="variant"/>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </div>
+</div>

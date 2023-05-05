@@ -1,0 +1,11 @@
+<div id="products-page">
+  <p id="products-page-title">Products:</p>
+  <div class="products-container">
+    <ng-container *ngFor="let product of products">
+      <div class="product-tile" [routerLink]="['product', product.externalId]">
+        <img title="{{ product.title }}" src="data:image/png;base64,{{product.preview}}" alt="product">
+        <p>{{product.title}}</p>
+      </div>
+    </ng-container>
+  </div>
+</div>
