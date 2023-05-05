@@ -3,12 +3,12 @@
     <canvas id="unity-canvas"></canvas>
     <div class="product-desc" *ngIf="isInitialized">
       <p class="small-title" *ngIf="unityService.productModels?.length">
-        {{ unityService.currentActiveProduct.title }}
+        {{unityService.currentActiveProduct.title}}
       </p>
       <div class="price-container">
         <p class="small-title">Price: ${{ unityService.getCurrentProductInvoice().price }}</p>
-        <button class="purchase-btn" (click)="modalService.open('purchase-info')">Purchase</button>
-        <app-modal id="purchase-info">
+        <button class="purchase-btn" (click)="modalService.open(modalWindowUniqueId)">Purchase</button>
+        <app-modal id="{{modalWindowUniqueId}}">
           <app-purchase-info [productInvoice]=unityService.getCurrentProductInvoice()></app-purchase-info>
         </app-modal>
       </div>

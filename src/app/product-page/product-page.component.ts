@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Injectable, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import {environment} from "../../environments/environment";
@@ -14,6 +14,8 @@ import {ModalService} from "../services/modal.service";
 })
 export class ProductPageComponent
   implements OnInit, OnDestroy {
+
+  public modalWindowUniqueId:string='';
 
   public isInitialized = false;
   public groupedMaterials: MaterialGroup[] = [];
@@ -31,6 +33,8 @@ export class ProductPageComponent
   }
 
   ngOnInit() {
+    this.modalWindowUniqueId = crypto.randomUUID();
+
     const scriptElement = this.scriptService.loadJsScript(
       this.renderer, `${environment.unityAssetsURL}/assets/Build/WebGLBuild.loader.js`);
 
