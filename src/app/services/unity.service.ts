@@ -98,6 +98,11 @@ export class UnityService {
     return this.configurationSystem.getCurrentProductInvoice();
   }
 
+  public getVariantById(variantId: string): Variant | undefined {
+    let variants = this.productModels.concat(this.productMaterials);
+    return variants.find(variant => variant.id === variantId);
+  }
+
   public activateModelVariant(productId: string, variantId: string): void {
     this.configurationSystem.activateModelVariant(productId, variantId);
   }

@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angul
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import {environment} from "../../environments/environment";
-import {MaterialCache, MaterialGroup} from "../models/GroupedMaterialsModels";
+import {VariantCache, VariantGroup} from "../models/GroupedVariantsModels";
 import {ScriptService} from "../services/script.service";
 import {UnityService} from "../services/unity.service";
 import {ModalService} from "../services/modal.service";
@@ -17,8 +17,10 @@ export class ProductPageComponent
 
   public modalWindowUniqueId: string = '';
 
-  public isInitialized = false;
-  public groupedMaterials: MaterialGroup[] = [];
+  public isInitialized: boolean = false;
+  public showHint: boolean = true;
+  public groupedModels: VariantGroup[] = [];
+  public groupedMaterials: VariantGroup[] = [];
 
   private unityInitializedSubscription!: Subscription;
 
@@ -54,7 +56,7 @@ export class ProductPageComponent
 
       this.unityService.productActiveStateChanged.subscribe(() => {
         this.isInitialized = true;
-        this.groupMaterials();
+        this.groupVariants();
         this.changeDetectorRef.detectChanges();
       });
     };
@@ -81,27 +83,49 @@ export class ProductPageComponent
     this.unityService.activateVariantSet(productId, variantSetId);
   }
 
-  private groupMaterials() {
+  private groupVariants() {
     const materials = this.unityService.productMaterials;
-    const cache: MaterialCache = {};
+    const models = this.unityService.productModels;
+
+    const materialsCache: VariantCache = {};
+    const modelsCache: VariantCache = {};
 
     this.groupedMaterials = [];
+    this.groupedModels = [];
 
     for (let i = 0; i < materials.length; i++) {
-      if (cache[materials[i].variantGroup.id] || cache[materials[i].variantGroup.id] === 0) {
-        const index = cache[materials[i].variantGroup.id];
+      if (materialsCache[materials[i].variantGroup.id] || materialsCache[materials[i].variantGroup.id] === 0) {
+        const index = materialsCache[materials[i].variantGroup.id];
         materials[i].isActive && (this.groupedMaterials[index].selectedOption = materials[i].id);
-        this.groupedMaterials[index].materials.push(materials[i]);
+        this.groupedMaterials[index].variants.push(materials[i]);
       } else {
-        const newGroup: MaterialGroup = {
+        const newGroup: VariantGroup = {
           group: materials[i].variantGroup.id,
           name: materials[i].variantGroup.name,
           selectedOption: materials[i].isActive ? materials[i].id : '',
-          materials: [materials[i]],
+          variants: [materials[i]],
         };
 
         const len = this.groupedMaterials.push(newGroup);
-        cache[materials[i].variantGroup.id] = len - 1;
+        materialsCache[materials[i].variantGroup.id] = len - 1;
+      }
+    }
+
+    for (let i = 0; i < models.length; i++) {
+      if (modelsCache[models[i].variantGroup.id] || modelsCache[models[i].variantGroup.id] === 0) {
+        const index = modelsCache[models[i].variantGroup.id];
+        models[i].isActive && (this.groupedModels[index].selectedOption = models[i].id);
+        this.groupedModels[index].variants.push(models[i]);
+      } else {
+        const newGroup: VariantGroup = {
+          group: models[i].variantGroup.id,
+          name: models[i].variantGroup.name,
+          selectedOption: models[i].isActive ? models[i].id : '',
+          variants: [models[i]],
+        };
+
+        const len = this.groupedModels.push(newGroup);
+        modelsCache[models[i].variantGroup.id] = len - 1;
       }
     }
   }

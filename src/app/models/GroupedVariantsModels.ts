@@ -1,12 +1,12 @@
 import {Variant} from "./unity";
 
-export interface MaterialGroup {
+export interface VariantGroup {
   group: string;
   name: string;
   selectedOption: string;
-  materials: Variant[];
+  variants: Variant[];
 }
 
-export interface MaterialCache {
+export interface VariantCache {
   [key: string]: number;
 }

@@ -1,6 +1,12 @@
 <div class="container">
   <div>
-    <canvas id="unity-canvas"></canvas>
+    <div id="unity-container">
+      <change-background></change-background>
+      <canvas id="unity-canvas"></canvas>
+      <div id="hint" *ngIf="isInitialized && showHint">
+        <img src="assets/images/MouseDragHint.png" alt="MouseDragHint">
+      </div>
+    </div>
     <div class="product-desc" *ngIf="isInitialized">
       <p class="small-title" *ngIf="unityService.productModels?.length">
         {{unityService.currentActiveProduct.title}}
@@ -26,7 +32,7 @@
           </mat-expansion-panel-header>
           <div class="variants-container">
             <ng-container *ngFor="let variantSet of unityService.productVariantSets">
-              <div class="variant-btn">
+              <div class="variant-btn variant-btn-margin">
                 <img src="data:image/png;base64,{{variantSet.thumbnail}}" title="{{ variantSet.title }}"
                      (click)="activateVariantSet(variantSet.productId, variantSet.id)" alt="variantSet"/>
               </div>
@@ -41,17 +47,27 @@
               <p class="variants-title">Variants:</p>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div class="variants-container">
-            <ng-container *ngFor="let variant of unityService.productModels">
-              <div class="variant-btn">
-                <img src="data:image/png;base64,{{variant.thumbnail}}" title="{{ variant.title }}"
-                     (click)="activateModel(variant.productId, variant.id)" alt="variant"/>
+          <div class="materials-container">
+            <ng-container *ngFor="let group of groupedModels">
+              <p class="small-variant-title">
+                {{group.name.substring(0, group.name.toLowerCase().indexOf(' variant'))}}:
+              </p>
+              <div class="variants-container">
+                <ng-container *ngFor="let model of group.variants">
+                  <div class="variant-box variant-box-model">
+                    <div class="variant-btn">
+                      <img src="data:image/png;base64,{{model.thumbnail}}" title="{{model.title}}"
+                           (click)="activateModel(model.productId, model.id)" alt="variant"/>
+                    </div>
+                    <p class="variant-name">{{model.title}}</p>
+                  </div>
+                </ng-container>
               </div>
             </ng-container>
           </div>
         </mat-expansion-panel>
       </div>
-      <div *ngIf="unityService.productModels?.length">
+      <div *ngIf="unityService.productMaterials?.length">
         <mat-expansion-panel class="variant-foldout">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -60,12 +76,17 @@
           </mat-expansion-panel-header>
           <div class="materials-container">
             <ng-container *ngFor="let group of groupedMaterials">
-              <p class="materials-title">{{group.name.substring(0, group.name.indexOf(' Material'))}}:</p>
+              <p class="small-variant-title">
+                {{group.name.substring(0, group.name.toLowerCase().indexOf(' material'))}}:
+              </p>
               <div class="variants-container">
-                <ng-container *ngFor="let material of group.materials">
-                  <div class="variant-btn">
-                    <img src="data:image/png;base64,{{material.thumbnail}}" title="{{ material.title }}"
-                         (click)="activateMaterial(material.productId, material.id)" alt="variant"/>
+                <ng-container *ngFor="let material of group.variants">
+                  <div class="variant-box variant-box-material">
+                    <div class="variant-btn">
+                      <img src="data:image/png;base64,{{material.thumbnail}}" title="{{ material.title }}"
+                           (click)="activateMaterial(material.productId, material.id)" alt="variant"/>
+                    </div>
+                    <p class="variant-name">{{material.title}}</p>
                   </div>
                 </ng-container>
               </div>

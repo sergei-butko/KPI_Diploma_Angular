@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -33,22 +33,23 @@ import {PurchaseInfoComponent} from './purchase-info/purchase-info.component';
     ModalComponent,
     PurchaseInfoComponent,
   ],
-  imports: [
-    AppRoutingModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatIconModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    RouterModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        AppRoutingModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        CommonModule,
+        FormsModule,
+        HttpClientModule,
+        MatButtonModule,
+        MatExpansionModule,
+        MatIconModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        RouterModule,
+        ReactiveFormsModule,
+        NgOptimizedImage,
+    ],
   providers: [],
   bootstrap: [AppComponent],
   exports: [HomeComponent],
